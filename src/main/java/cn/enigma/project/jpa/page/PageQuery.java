@@ -1,34 +1,80 @@
 package cn.enigma.project.jpa.page;
 
-import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author luzh
- * Create: 2019-06-04 14:52
+ * Create: 2019-07-24 13:48
  * Modified By:
  * Description:
  */
-@Data
-public class PageQuery {
-    @ApiModelProperty(value = "页码，page=0查所有，默认为1", notes = "分页查询页码notes")
-    private Integer page;
-    @ApiModelProperty(value = "条目数，默认为10")
-    private Integer rows;
+public class PageQuery<Entity, Result> {
 
-    public Integer getPage() {
-        return null == page ? 1 : page < 0 ? 0 : page;
+    private final PageQueryRepository<Entity> pageQueryRepository;
+
+    public PageQuery(PageQueryRepository<Entity> pageQueryRepository) {
+        this.pageQueryRepository = pageQueryRepository;
     }
 
-    public Integer getRows() {
-        return null == rows || rows < 1 ? 10 : rows > 100 ? 100 : rows;
+    /**
+     * 通用的分页查询
+     *
+     * @param pageQuery 分页
+     * @param mapper    数据转换mapper
+     * @return 结果
+     */
+    public PageData<Result> pageQuery(PageQueryRequest pageQuery, Function<Entity, Result> mapper) {
+        return pageQuery(null, pageQuery, mapper);
     }
 
-    public boolean pageQuery() {
-        return !getPage().equals(0);
+    /**
+     * 通用的多条件、分页查询
+     *
+     * @param spec      动态查询条件
+     * @param pageQuery 分页
+     * @param mapper    查询结果转换mapper
+     * @return 结果
+     */
+    public PageData<Result> pageQuery(Specification<Entity> spec, PageQueryRequest pageQuery, Function<Entity, Result> mapper) {
+        if (pageQuery.pageQuery()) {
+            PageRequest pageRequest = PageRequest.of(pageQuery.getPage() - 1, pageQuery.getRows());
+            Page<Entity> page = findAll(spec, pageRequest);
+            return new PageData<>(
+                    page.getTotalElements(),
+                    page.getTotalPages(),
+                    page.getContent().stream().map(mapper).collect(Collectors.toList())
+            );
+        } else {
+            List<Entity> list = findAll(spec);
+            return new PageData<>(
+                    list.size(),
+                    list.isEmpty() ? 0 : 1,
+                    list.stream().map(mapper).collect(Collectors.toList())
+            );
+        }
     }
 
-    public PageQuery(Integer page) {
-        this.page = page;
+    private Page<Entity> findAll(Specification<Entity> spec, Pageable pageable) {
+        if (null == spec) {
+            return pageQueryRepository.findAll(pageable);
+        } else {
+            return pageQueryRepository.findAll(spec, pageable);
+        }
     }
+
+    private List<Entity> findAll(Specification<Entity> spec) {
+        if (null == spec) {
+            return pageQueryRepository.findAll();
+        } else {
+            return pageQueryRepository.findAll(spec);
+        }
+    }
+
 }

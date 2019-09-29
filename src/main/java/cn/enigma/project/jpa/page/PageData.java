@@ -11,12 +11,12 @@ import java.util.List;
  * Description:
  */
 @Data
-public class PageResult<T> {
+public class PageData<T> {
     private Long total;
     private Integer totalPage;
     private List<T> rows;
 
-    public PageResult(long total, Integer totalPage, List<T> rows) {
+    public PageData(long total, Integer totalPage, List<T> rows) {
         this.total = total;
         this.totalPage = totalPage;
         this.rows = rows;
