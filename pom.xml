@@ -102,6 +102,7 @@
                         <!-- 排除掉测试 package 里面的文件 -->
                         <exclude>cn/enigma/project/jpa/test/**/*</exclude>
                         <exclude>cn/enigma/project/jpa/test</exclude>
+                        <exclude>cn/enigma/project/jpa/CommonJpaApplication.class</exclude>
                     </excludes>
                 </configuration>
             </plugin>
