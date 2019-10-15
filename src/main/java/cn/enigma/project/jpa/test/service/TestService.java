@@ -4,6 +4,7 @@ import cn.enigma.project.jpa.part.PartQuery;
 import cn.enigma.project.jpa.test.dao.TestRepository;
 import cn.enigma.project.jpa.test.entity.TestEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -33,7 +34,8 @@ public class TestService {
     }
 
     public List<TestOneBO> listOne() {
-        return partQuery.statisticsQuery(entityManager, TestOneBO.class, TestEntity.class, entityManager.getCriteriaBuilder().and());
+        Specification<TestEntity> specification = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.and();
+        return partQuery.statisticsQuery(entityManager, TestOneBO.class, TestEntity.class, specification);
     }
 
     public TestEntity update(Integer id) {

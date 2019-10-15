@@ -1,5 +1,7 @@
 package cn.enigma.project.jpa.part;
 
+import org.springframework.data.jpa.domain.Specification;
+
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
@@ -24,14 +26,14 @@ public class PartQuery<Entity> {
      * 它是JPA 2.0引入javax.persistence.Query接口的一个扩展，TypedQuery接口知道它返回的类型，
      * 所以使用中,先创建查询得到TypedQuery,然后通过typeQuery.getResultList得到结果
      *
-     * @param em          em
-     * @param resultClass resultClass
-     * @param entityClass entityClass
-     * @param predicate   predicate
+     * @param em            em
+     * @param resultClass   resultClass
+     * @param entityClass   entityClass
+     * @param specification specification
      * @return list
      */
     public <Result> List<Result> statisticsQuery(EntityManager em, Class<Result> resultClass,
-                                                 Class<Entity> entityClass, Predicate predicate) {
+                                                 Class<Entity> entityClass, Specification<Entity> specification) {
         // 下面是固定写法
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Result> criteriaQuery = criteriaBuilder.createQuery(resultClass);
@@ -41,7 +43,7 @@ public class PartQuery<Entity> {
         // 设置查询到数据后生成新的类的构造方法
         criteriaQuery.select(criteriaBuilder.construct(resultClass, selections));
         // 设置查询条件
-        criteriaQuery.where(predicate);
+        criteriaQuery.where(specification.toPredicate(root, criteriaQuery, criteriaBuilder));
         TypedQuery<Result> typedQuery = em.createQuery(criteriaQuery);
         return typedQuery.getResultList();
     }
