@@ -15,7 +15,7 @@ import java.util.List;
  * Modified By:
  * Description:
  */
-public class PartQuery<Entity> {
+public class PartQuery {
 
     /**
      * 使用一个不是实体的类来装载查询出来的数据，该装载类必须继承实体类
@@ -32,7 +32,7 @@ public class PartQuery<Entity> {
      * @param specification specification
      * @return list
      */
-    public <Result> List<Result> statisticsQuery(EntityManager em, Class<Result> resultClass,
+    public static <Result, Entity> List<Result> statisticsQuery(EntityManager em, Class<Result> resultClass,
                                                  Class<Entity> entityClass, Specification<Entity> specification) {
         // 下面是固定写法
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -61,7 +61,7 @@ public class PartQuery<Entity> {
         return list.toArray(new String[0]);
     }
 
-    private Selection<?>[] getSelections(Root<?> root, String... attributeNames) {
+    private static Selection<?>[] getSelections(Root<?> root, String... attributeNames) {
         Selection<?>[] selections = new Selection[attributeNames.length];
         for (int i = 0; i < attributeNames.length; i++) {
             selections[i] = getSelection(root, attributeNames[i]);
@@ -69,7 +69,7 @@ public class PartQuery<Entity> {
         return selections;
     }
 
-    private Selection<?> getSelection(Root<?> root, String attributeName) {
+    private static Selection<?> getSelection(Root<?> root, String attributeName) {
         return root.get(attributeName);
     }
 }

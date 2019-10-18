@@ -21,8 +21,6 @@ import java.util.List;
 @Service
 public class TestService {
 
-    private final PartQuery<TestEntity> partQuery = new PartQuery<>();
-
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -35,7 +33,7 @@ public class TestService {
 
     public List<TestOneBO> listOne() {
         Specification<TestEntity> specification = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.and();
-        return partQuery.statisticsQuery(entityManager, TestOneBO.class, TestEntity.class, specification);
+        return PartQuery.statisticsQuery(entityManager, TestOneBO.class, TestEntity.class, specification);
     }
 
     public TestEntity update(Integer id) {
