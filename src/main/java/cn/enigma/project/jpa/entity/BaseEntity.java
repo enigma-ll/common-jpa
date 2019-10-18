@@ -1,5 +1,7 @@
 package cn.enigma.project.jpa.entity;
 
+import cn.enigma.project.jpa.query.partial.PartQuery;
+import cn.enigma.project.jpa.query.partial.QueryColumn;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;

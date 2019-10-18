@@ -1,10 +1,12 @@
-package cn.enigma.project.jpa.part;
+package cn.enigma.project.jpa.query.partial;
 
+import cn.enigma.project.jpa.entity.BaseEntity;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import java.lang.annotation.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +34,8 @@ public class PartQuery {
      * @param specification specification
      * @return list
      */
-    public static <Result, Entity> List<Result> statisticsQuery(EntityManager em, Class<Result> resultClass,
-                                                 Class<Entity> entityClass, Specification<Entity> specification) {
+    public static <Result, Entity extends BaseEntity> List<Result> statisticsQuery(EntityManager em, Class<Result> resultClass,
+                                                                                   Class<Entity> entityClass, Specification<Entity> specification) {
         // 下面是固定写法
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Result> criteriaQuery = criteriaBuilder.createQuery(resultClass);
@@ -53,10 +55,9 @@ public class PartQuery {
         int length = fields.length;
         List<String> list = new ArrayList<>(length);
         for (Field field : fields) {
-            if (field.getName().equals("serialVersionUID")) {
-                continue;
+            if (field.isAnnotationPresent(QueryColumn.class)) {
+                list.add(field.getName());
             }
-            list.add(field.getName());
         }
         return list.toArray(new String[0]);
     }

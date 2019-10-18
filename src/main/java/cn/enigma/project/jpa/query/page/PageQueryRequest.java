@@ -1,4 +1,4 @@
-package cn.enigma.project.jpa.page;
+package cn.enigma.project.jpa.query.page;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
