@@ -1,7 +1,5 @@
 package cn.enigma.project.jpa.entity;
 
-import cn.enigma.project.jpa.query.partial.PartQuery;
-import cn.enigma.project.jpa.query.partial.QueryColumn;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
@@ -23,7 +21,7 @@ import java.io.Serializable;
 @Data
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class BaseEntity implements Serializable {
+public abstract class BaseEntity implements Serializable {
     private static final long serialVersionUID = -6196398819600840891L;
 
     @Setter(value = AccessLevel.PROTECTED)
@@ -32,4 +30,7 @@ public class BaseEntity implements Serializable {
 
     @LastModifiedDate
     private Long updateTime;
+
+    public abstract Object getId();
+
 }
