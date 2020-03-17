@@ -5,7 +5,7 @@ import cn.enigma.project.common.task.Task;
 import cn.enigma.project.common.task.TaskCacheCompute;
 import cn.enigma.project.common.task.TaskResult;
 import cn.enigma.project.jpa.entity.BaseEntity;
-import cn.enigma.project.jpa.query.partial.PartQuery;
+import cn.enigma.project.jpa.query.partial.PartialQuery;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.EntityManager;
@@ -156,7 +156,7 @@ public class CrudCheckDataUtil {
     private static <T extends BaseEntity> T generateQueryCallable(EntityManager entityManager, String attributeName,
                                                                   String value, Class<T> entity) {
         Specification<T> specification = (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(attributeName), value);
-        List<T> list = PartQuery.statisticsQuery(entityManager, entity, entity, specification);
+        List<T> list = PartialQuery.statisticsQuery(entityManager, entity, entity, specification);
         return list.isEmpty() ? null : list.get(0);
     }
 
